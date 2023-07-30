@@ -85,6 +85,20 @@ const annotations = [{
       y2: height
     },
     id: "buffalo-crash-annot"
+  },
+  {
+    note: {
+      label: "An early news article reporting on \"Kia Boyz\" from August 25, 2021 in Milwaukee, WI.",
+      title: "Early Article from Milwaukee on Kia Boyz"
+    },
+    data: { date: d3.isoParse('2021-08-25T00:00:00.000'), ct:0.5 },
+    dy: -height*0.2,
+    dx: 0,
+    subject: {
+      y1: margin.top,
+      y2: height
+    },
+    id: "milwaukee-news-annot"
   }
 
 ]
@@ -106,7 +120,11 @@ const makeAnnotations = d3.annotation()
         }
         else if (annotation.id == "buffalo-crash-annot"){
             window.open("https://apnews.com/article/police-buffalo-f5c28ce63cd8a44937232696cb6c1a7e", "_blank");
-        }})
+        }
+        else if (annotation.id == "milwaukee-news-annot"){
+            window.open("https://shepherdexpress.com/news/features/kia-and-hyundai-thefts-continue-to-buzz-online/", "_blank")
+        }
+        })
     .annotations(annotations)
 
 // make group for data lines and add to svg before annotations to draw first
