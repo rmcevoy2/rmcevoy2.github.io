@@ -1,0 +1,70 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: ui-monospace;
+  background: #000024;
+  color: gainsboro;
+}
+
+#plot {
+  margin: 0 auto;
+  padding: 80px 20px;
+}
+
+#h {
+    text-align: center;
+}
+
+svg {
+  text-align: center;
+  font-size: small;
+}
+
+path.line {
+  fill: none;
+  stroke-width: 3px;
+}
+
+path.area {
+  fill: blue;
+  opacity: 0.2;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: slategray;
+  shape-rendering: crispEdges;
+}
+
+line.x,
+line.y,
+circle.y {
+  stroke: Aqua;
+}
+
+.buffalo {
+    color: blue;
+    stroke: blue;
+}
+.buffalo input[type=checkbox]{
+    background-color: blue;
+}
+
+.norfolk {
+    color:darkcyan;
+    stroke: darkcyan;
+}
+.norfolk input[type=checkbox]{
+    background-color: darkcyan;
+}
+
+.memphis {
+    color: darkslateblue;
+    stroke: darkslateblue;
+}
+.memphis input[type=checkbox]{
+    background-color: darkslateblue;
+}
