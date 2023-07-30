@@ -1,7 +1,8 @@
 // Initialize parameters
 var enabledCities = [],
     endYear = 2021,
-    per100k = false;
+    per100k = false,
+    explore = false;
 
 // bounds on years
 const startYear = 2020,
@@ -23,10 +24,10 @@ const cityPops = {
 }
 
 // html to add option for scaling data by populations
-const scaleHTML = '<input type="checkbox" name="togglePerCapita" onchange="togglePerCapita()"><label for="togglePerCapita">Scale per 100,000 population</label>'
+//const scaleHTML = '<input type="checkbox" name="togglePerCapita" onchange="togglePerCapita()"><label for="togglePerCapita">Scale per 100,000 population</label>'
 
 // Declare the chart dimensions and margins.
-const margin = { top: 0, right: 0, bottom: 40, left: 40 };
+const margin = { top: 0, right: 0, bottom: 20, left: 40 };
 var width = 960 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -115,6 +116,7 @@ const makeAnnotations = d3.annotation()
         ct: d => y.invert(d.y)
     })
     .on('noteclick', function (annotation) {
+        if (!explore) return;
         if (annotation.id == "kia-boys-doc-annot"){
             window.open("https://www.youtube.com/watch?v=fbTrLyqL_nw", "_blank");
         }
@@ -124,7 +126,7 @@ const makeAnnotations = d3.annotation()
         else if (annotation.id == "milwaukee-news-annot"){
             window.open("https://shepherdexpress.com/news/features/kia-and-hyundai-thefts-continue-to-buzz-online/", "_blank")
         }
-        })
+    })
     .annotations(annotations)
 
 // make group for data lines and add to svg before annotations to draw first
@@ -138,7 +140,7 @@ d3.select("svg")
   .attr("class", "annotation-group")
   .call(makeAnnotations);
 
-d3.select("g.annotations").selectAll("g.annotation-note").style("cursor","pointer");
+
 
 async function loadData(url, population) {
 // Get data from source
@@ -174,9 +176,12 @@ function changeTime(change) {
     endYear = endYear + change;
     if (endYear >= upperEndYear) {
         endYear = upperEndYear;
+        
         document.getElementById("next").disabled = true;
-        document.getElementById("next").src = "img/right-disabled-dark.png"
-        document.getElementById("scale").innerHTML = scaleHTML;
+        document.getElementById("next").src = "img/right-disabled-dark.png";
+
+        d3.selectAll(".linear-finished").style("visibility", "visible");
+
     }
     else {
         document.getElementById("next").disabled = false;
@@ -191,12 +196,30 @@ function changeTime(change) {
         document.getElementById("prev").disabled = false;
         document.getElementById("prev").src = "img/left-dark.png"
     }
-    
-    document.getElementById("h").innerHTML = "Auto Thefts in select US Cities in " + startYear +"-"+endYear
+    if (explore) {
+        document.getElementById("h").innerHTML = "Auto Thefts in select US Cities in " + startYear +"-"+endYear;
+    } else {document.getElementById("h").innerHTML = "Auto Thefts in Buffalo, NY in " + startYear +"-"+endYear;}
 
     updatePlot();
 }
 
+
+function startExplore() {
+    explore = true;
+
+    d3.selectAll(".explore").style("visibility","visible");
+    d3.select("#explore-btn").style("visibility","hidden");
+
+    document.getElementById("buffaloCb").disabled = false;
+    //d3.select("#buffaloCb").attr("disabled", false);
+
+    d3.select("g.annotations")
+    .selectAll("g.annotation-note")
+    .style("cursor","pointer")
+    .selectAll("text.annotation-note-title")
+    .style("fill","blue")
+    .style("text-decoration-line", "underline");
+}
 
 function toggleCity(city) {
     let cityI = enabledCities.indexOf(city);
@@ -211,7 +234,7 @@ function toggleCity(city) {
 }
 
 function togglePerCapita() {
-    per100k = !per100k
+    per100k = document.getElementById("togglePerCapita").checked
     updatePlot()
 }
 

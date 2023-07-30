@@ -19,7 +19,7 @@ body {
 
 svg {
   text-align: center;
-  font-size: small;
+  font-size: smaller;
 }
 
 path.line {
@@ -49,22 +49,19 @@ circle.y {
     color: blue;
     stroke: blue;
 }
-.buffalo input[type=checkbox]{
-    background-color: blue;
-}
+
 
 .norfolk {
     color:darkcyan;
     stroke: darkcyan;
-}
-.norfolk input[type=checkbox]{
-    background-color: darkcyan;
 }
 
 .memphis {
     color: darkslateblue;
     stroke: darkslateblue;
 }
-.memphis input[type=checkbox]{
-    background-color: darkslateblue;
+
+
+.explore, .linear-finished {
+    visibility:hidden;
 }

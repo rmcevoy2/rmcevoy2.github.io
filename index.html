@@ -2,34 +2,41 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <title>United States Cities Auto Thefts</title>
+        <title>Auto Thefts and Media Coverage</title>
         <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js" integrity="sha512-iBAeBWWWFb8HqSBcrqcz98iIpuVH1la39dEYHtyQ/pGpeCQTQVvLJOWAuhv2Q7JSHp9k7hWA7sGxU3hHJe+tFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <link rel="stylesheet" href="plot.css" />
     </head>
     <body onload="init()">
-        <h1 id="h">Auto Thefts in select US Cities in 2020-2021</h1>
+        <h1 id="h">Auto Thefts in Buffalo, NY in 2020-2021</h1>
         <div id="nav">
             <input type="image" src="img/left-disabled-dark.png" alt="previous" width="48" height="48"
                 onclick="changeTime(-1)" id="prev" disabled>
             <input type="image" src="img/right-dark.png" alt="next" width="48" height="48"
                 onclick="changeTime(1)" id="next">
+            <button id="explore-btn" class="linear-finished" onclick="startExplore()">Explore</button>
         </div>
-        <div id="citySelect">
-            <input type="checkbox" id="norfolkCb" name="norfolk" onchange="toggleCity('norfolk')">
-            <label for="norfolkCb" class="norfolk">Norfolk, VA</label>
-            <input type="checkbox" id="buffaloCb" name="buffalo" onchange="toggleCity('buffalo')">
+        <div id="citySelect" >
+            <input type="checkbox" id="buffaloCb" name="buffalo" onchange="toggleCity('buffalo')" disabled>
             <label for="buffaloCb" class="buffalo">Buffalo, NY</label>
-            <input type="checkbox" id="memphisCb" name="memphis" onchange="toggleCity('memphis')">
-            <label for="memphisCb" class="memphis">Memphis, TN</label>
+            
+            <input class="explore" type="checkbox" id="norfolkCb" name="norfolk" onchange="toggleCity('norfolk')">
+            <label class="explore norfolk" for="norfolkCb">Norfolk, VA</label>
+            
+            <input class="explore" type="checkbox" id="memphisCb" name="memphis" onchange="toggleCity('memphis')">
+            <label class="explore memphis" for="memphisCb">Memphis, TN</label>
         </div>
+        <p class="linear-finished">The trend of increased auto thefts in Buffalo, NY did not really take off until after significant national media coverage.</p>
 
         <div id="plot" ></div>
-        <div id="scale"></div>
+        <div id="scale" class="explore">
+            <input type="checkbox" name="togglePerCapita"  id="togglePerCapita" onchange="togglePerCapita()"><label for="togglePerCapita">Scale per 100,000 population</label>
+        </div>
         <h3>Sources:</h3>
         <a href="https://data.norfolk.gov/Public-Safety/Police-Incident-Reports/r7bn-2egr">Norfolk Crime Data</a>
         <a href="https://data.buffalony.gov/Public-Safety/Crime-Incidents/d6g9-xbgu">Buffalo Crime Data</a>
         <a href="https://memphisinternal.data.socrata.com/Public-Safety/Memphis-Police-Department-Public-Safety-Incidents/ybsi-jur4">Memphis Crime Data</a>
+        <a href="https://data.census.gov/">US Census Data</a>
         
         <script src="plot.js" type="text/javascript"></script>
          
