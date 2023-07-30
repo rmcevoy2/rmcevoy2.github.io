@@ -96,8 +96,6 @@ const makeAnnotations = d3.annotation()
   .annotations(annotations)
 
 d3.select("svg")
-  .append('a')
-  .attr("href", "google.com")
   .append("g")
   .attr("transform",
   "translate("+margin.left+","+margin.top+")")
