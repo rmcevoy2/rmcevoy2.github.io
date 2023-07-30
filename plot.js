@@ -63,38 +63,56 @@ const annotations = [{
       label: "Kia Boys Documentary (A Story of Teenage Car Theft) was released on YouTube on May 31, 2022.",
       title: "Kia Boys Documentary"
     },
-    //can use x, y directly instead of data
     data: { date: d3.isoParse('2022-05-31T00:00:00.000'), ct:0.5 },
-    //x:50,
-    //y:50,
     dy: -height*0.2,
     dx: 0,
     subject: {
       y1: margin.top,
       y2: height
     },
-    id: "kia-boys"
-  }]
-const makeAnnotations = d3.annotation()
-//  .editMode(true)
-  .notePadding(15)
-  .type(type)
-  //accessors & accessorsInverse not needed
-  //if using x, y in annotations JSON
-  .accessors({
-    x: d => x(d.date),
-    y: d => y(d.ct)
-  })
-  .accessorsInverse({
-     date: d => x.invert(d.x),
-     ct: d => y.invert(d.y)
-  })
-  .on('noteclick', function (annotation) {
-    if (annotation.id == "kia-boys"){
-        window.open("https://www.youtube.com/watch?v=fbTrLyqL_nw", "_blank");
-    }})
-  .annotations(annotations)
+    id: "kia-boys-doc-annot"
+  },
+  {
+    note: {
+      label: "A stolen Kia was crashed and left 4 teenagers dead, per AP, on October 25, 2022 in Buffalo, NY.",
+      title: "Deadly Buffalo Crash"
+    },
+    data: { date: d3.isoParse('2022-10-25T00:00:00.000'), ct:0.5 },
+    dy: -height*0.2,
+    dx: 0,
+    subject: {
+      y1: margin.top,
+      y2: height
+    },
+    id: "buffalo-crash-annot"
+  }
 
+]
+const makeAnnotations = d3.annotation()
+    .notePadding(5)
+    .textWrap(80)
+    .type(type)
+    .accessors({
+        x: d => x(d.date),
+        y: d => y(d.ct)
+    })
+    .accessorsInverse({
+        date: d => x.invert(d.x),
+        ct: d => y.invert(d.y)
+    })
+    .on('noteclick', function (annotation) {
+        if (annotation.id == "kia-boys-doc-annot"){
+            window.open("https://www.youtube.com/watch?v=fbTrLyqL_nw", "_blank");
+        }
+        else if (annotation.id == "buffalo-crash-annot"){
+            window.open("https://apnews.com/article/police-buffalo-f5c28ce63cd8a44937232696cb6c1a7e", "_blank");
+        }})
+    .annotations(annotations)
+
+// make group for data lines and add to svg before annotations to draw first
+var lineGroup = d3.select('svg').append('g').attr('id','lineGroup');
+
+// add annotations
 d3.select("svg")
   .append("g")
   .attr("transform",
@@ -102,6 +120,7 @@ d3.select("svg")
   .attr("class", "annotation-group")
   .call(makeAnnotations);
 
+d3.select("g.annotations").selectAll("g.annotation-note").style("cursor","pointer");
 
 async function loadData(url, population) {
 // Get data from source
@@ -119,26 +138,21 @@ const data = {norfolk: null, buffalo: null, memphis: null};
 function init() {
     // norfolk va data, aggregated by month since start of 2020 to present
     const norfolkData = loadData(cityURLs.norfolk, cityPops.norfolk);
-    norfolkData.then((v) => {data.norfolk = v; 
-        console.log(data);});
+    norfolkData.then((v) => {data.norfolk = v; });
 
     // buffalo ny data, aggregated by month since start of 2020 to present
     const buffaloData = loadData(cityURLs.buffalo, cityPops.buffalo);
-    buffaloData.then((v) => {data.buffalo = v; 
-        console.log(data); });
+    buffaloData.then((v) => {data.buffalo = v; });
 
     // memphis tn data, aggregated by month since start of 2020 to present
     const memphisData = loadData(cityURLs.memphis, cityPops.memphis);
-    memphisData.then((v) => {data.memphis = v; 
-        console.log(data);});
+    memphisData.then((v) => {data.memphis = v; });
 
     Promise.all([norfolkData, buffaloData, memphisData]).then(vs => {document.getElementById("buffaloCb").checked = true; toggleCity("buffalo");})
 }
 
-
-
 function changeTime(change) {
-    console.log("Old endYear: " + endYear);
+
     endYear = endYear + change;
     if (endYear >= upperEndYear) {
         endYear = upperEndYear;
@@ -174,7 +188,6 @@ function toggleCity(city) {
     else {
         enabledCities.splice(cityI, 1)
     }
-    console.log(enabledCities);
     
     updatePlot();
 }
@@ -222,13 +235,9 @@ function updatePlot() {
         .duration(750)
         .call(d3.axisLeft(y));
 
-
-
-
     // remove deselected cities from plot, state parameter
     Object.keys(linePaths).forEach((city) =>{
             if (enabledCities.indexOf(city) == -1){
-                console.log("deleting linePath " + city);
                 linePaths[city].remove();
                 delete linePaths[city];
             }
@@ -244,9 +253,9 @@ function updatePlot() {
                 .x((d) => x(d.date))
                 .y((d) => y(per100k? d.ctp100k : d.ct)));
         }
-        // for new lines, draw from scratch, with animations
+        // for new lines, draw from scratch
         else {
-            linePaths[city] = svg.append('g')
+            linePaths[city] = lineGroup.append('g')
                 .attr("transform",
                     "translate("+margin.left+","+margin.top+")")
                 .append("path")
@@ -256,11 +265,9 @@ function updatePlot() {
                     .x((d) => x(d.date))
                     .y((d) => y(per100k? d.ctp100k : d.ct)));
         }
-
-
     })
 
-    makeAnnotations.annotations(annotations)
+    makeAnnotations.annotations(annotations);
     makeAnnotations.update();
 }
 
